@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&display=swap');
+
+/* Constantes de cores css */
+:root {
+    --cor-principal: #00FF00;
+    --cor-secundaria: #00AA00;
+    --cor-separador: #005500;
+    --cor-fundo: #001A00;
+    --cor-fundo-paineis: #002200;
+}
+
+
+.jersey-10-regular {
+    font-family: "Jersey 10", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: var(--cor-secundaria);
+    font-family: "Jersey 10";
+    font-weight: 200;
+}
+
+
+body {
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: var(--cor-fundo);
+}
+.video-overlay {
+    /* Não clickavel */
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+      linear-gradient(
+        0deg,
+        rgba(255, 0, 0, 0.06),
+        rgba(0, 255, 0, 0.02),
+        rgba(0, 0, 255, 0.06)
+      );
+    background-size: 100% 4px, 30px 100%;
+    z-index: 1;
+    animation: flicker 100ms infinite;
+  }
+  .video-overlay:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgb(255, 255, 255);
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0) 70%,
+      rgba(0, 0, 0, 1) 100%
+    );
+    z-index: 2;
+  }  
+  @keyframes flicker {
+    0% {
+      transform: translateY(1px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+.main{
+    display: flex;
+    gap: 20px;
+}
+
+.game-container {
+    display: flex;
+    flex-direction: column;
+    background-color:var(--cor-fundo-paineis);
+    border-color: var(--cor-separador);
+    border-width: 5px;
+    border-style: solid;
+    box-shadow: 0 0 10px rgb(0, 0, 0, 0.1);
+    padding: 10px;
+    width: 55vw;
+    height: 95vh;
+}
+
+.game-title{
+    font-size: 64px;
+    border-bottom: 5px solid var(--cor-separador);
+    margin-bottom: 20px;
+}
+
+.game{
+    display: flex;
+    align-items: start;
+}
+
+canvas {
+    border-color: var(--cor-separador);
+    border-width: 5px;
+    border-style: solid;
+}
+
+.game-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 20px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 32px;
+    cursor: pointer;
+    background-color: var(--cor-fundo-paineis);
+    border: 5px solid var(--cor-separador);
+    transition:  background-color 0.3s ease;
+    outline-style: none;
+}
+
+button:hover {
+    background-color: var(--cor-separador);
+    color: var(--cor-principal);
+}
+
+#score {
+    margin-top: 10px;
+    font-size: 32px;
+}
+
+.placar {
+    display: flex;
+    flex-direction: column;
+    background-color:var(--cor-fundo-paineis);
+    border-color: var(--cor-separador);
+    border-width: 5px;
+    border-style: solid;
+    box-shadow: 0 0 10px rgb(0, 0, 0, 0.1);
+    padding: 10px;
+    width: 40vw;
+    height: 95vh;
+}
+.placar-jogadores {
+    font-size: 64px;
+    border-bottom: 5px solid var(--cor-separador);
+    margin-bottom: 20px;
+}
+
+.placar div{
+    align-self: center;
+    margin-top: 50%;
+}
