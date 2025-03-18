@@ -6,10 +6,13 @@ const ctx = canvas.getContext('2d');
 const box = 20;
 const canvasWidth = 800;
 const canvasHeight = 600;
+const deathSound = new Audio('assets/sounds/death.wav');
+const pickupAppleSound = new Audio('assets/sounds/pickupApple.wav');
 let score = 0;
 let snake = [{x: 9 * box, y: 10 * box}];
 let food = {x: Math.floor(Math.random() * 19 + 1) * box, y: Math.floor(Math.random() * 19 + 1) * box}
 let keyPressed;
+
 
 ctx.fillStyle = 'black';
 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -17,7 +20,9 @@ ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 // Verificação de colisão com as paredes
 function collisionWithWall() {
     if (snake[0].x < 0 || snake[0].x >= canvasWidth || snake[0].y < 0 || snake[0].y >= canvasHeight) {
-//        console.log('Colidiu com a parede');
+    //    console.log('Colidiu com a parede');
+        deathSound.play(); // Toca o som de morte
+        clearInterval(game); // Para o jogo
         return true; // A cobra colidiu com a parede
     }
     return false;
@@ -28,6 +33,8 @@ function collisionWithBody() {
     for (let i = 1; i < snake.length; i++) {
         if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
 //            console.log('Colidiu com o corpo');
+            deathSound.play(); // Toca o som de morte
+            clearInterval(game); // Para o jogo
             return true; // A cabeça colidiu com o corpo
         }
     }
@@ -42,6 +49,7 @@ function collisionWithFood() {
         // Adicionar um novo segmento ao corpo da cobra
         snake.push({ x: snake[snake.length - 1].x, y: snake[snake.length - 1].y });
         score++; // Aumenta a pontuação
+        pickupAppleSound.play(); // Toca o som de morte
 //        console.log('Comeu comida');
     }else{
         snake.pop();
@@ -71,11 +79,19 @@ function drawGame() {
     ctx.fillRect(food.x, food.y, box, box);
 
     // Desenhar a cobra
-    for (let i = 0; i < snake.length; i++){
-        //Calcular gradiente do corpo
-        ctx.fillStyle = `rgb( 0, 255, 0)`; 
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
-    }
+    // Desenhar a cobra com gradiente de cores
+for (let i = 0; i < snake.length; i++) {
+    let greenIntensity = 255 - i * 10; // Diminui o verde conforme aumenta o tamanho
+    ctx.fillStyle = `rgb(0, ${greenIntensity > 50 ? greenIntensity : 50}, 0)`;
+    
+    ctx.fillRect(snake[i].x, snake[i].y, box, box);
+
+    // Adiciona um contorno para destacar os segmentos
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+}
+
 
     // Movimenta a cobra
     let snakeX = snake[0].x;
