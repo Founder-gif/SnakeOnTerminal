@@ -139,7 +139,13 @@ button:hover {
     font-size: 32px;
 }
 
-.placar {
+.developer{
+    position:fixed;
+    
+    bottom: 0;
+}
+
+/* .placar {
     display: flex;
     flex-direction: column;
     background-color:var(--cor-fundo-paineis);
@@ -160,4 +166,4 @@ button:hover {
 .placar div{
     align-self: center;
     margin-top: 50%;
-}
+} */
