@@ -21,8 +21,6 @@ ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 function collisionWithWall() {
     if (snake[0].x < 0 || snake[0].x >= canvasWidth || snake[0].y < 0 || snake[0].y >= canvasHeight) {
     //    console.log('Colidiu com a parede');
-        deathSound.play(); // Toca o som de morte
-        clearInterval(game); // Para o jogo
         return true; // A cobra colidiu com a parede
     }
     return false;
@@ -33,8 +31,6 @@ function collisionWithBody() {
     for (let i = 1; i < snake.length; i++) {
         if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
 //            console.log('Colidiu com o corpo');
-            deathSound.play(); // Toca o som de morte
-            clearInterval(game); // Para o jogo
             return true; // A cabeça colidiu com o corpo
         }
     }
@@ -55,6 +51,40 @@ function collisionWithFood() {
         snake.pop();
     }
 }
+function restartGame(event) {
+    if (event.keyCode === 13) { // Tecla Enter
+        document.removeEventListener("keydown", restartGame);
+        score = 0;
+        snake = [{ x: 9 * box, y: 10 * box }];
+        food = { x: Math.floor(Math.random() * 19 + 1) * box, y: Math.floor(Math.random() * 19 + 1) * box };
+        keyPressed = 'RIGHT';
+        game = setInterval(drawGame, 100);
+    }
+}
+
+function gameOverScreen() {
+    // Criar fundo verde escuro, simulando um terminal antigo
+    ctx.fillStyle = "#002800"; // Verde bem escuro
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // Configurar estilo do texto
+    ctx.font = "40px 'Jersey 10', sans-serif";
+    ctx.textAlign = "center";
+
+    // Criar um efeito de brilho suave ao redor do texto
+    ctx.fillStyle = "#00ff00"; // Verde brilhante
+    ctx.shadowColor = "#00ff00";
+    
+    // Texto "GAME OVER"
+    ctx.fillText("GAME OVER", canvasWidth / 2, canvasHeight / 2 - 20);
+
+    // Mostrar pontuação final em um tom um pouco mais escuro de verde
+    ctx.font = "20px 'Jersey 10', sans-serif";
+    ctx.fillStyle = "#00cc00";
+    ctx.fillText(`Pontuação: ${score}`, canvasWidth / 2, canvasHeight / 2 + 20);
+}
+
+
 
 
 // Função para desenhar o jogo
@@ -63,8 +93,9 @@ function drawGame() {
 
      // Verifica a colisão com as paredes ou com o corpo
      if (collisionWithWall() || collisionWithBody()) {
+        deathSound.play(); // Toca o som de morte
         clearInterval(game); // Para o jogo se houver colisão
-        alert("Game Over");
+        gameOverScreen();
         return;
     }
 
@@ -79,18 +110,21 @@ function drawGame() {
     ctx.fillRect(food.x, food.y, box, box);
 
     // Desenhar a cobra
-    // Desenhar a cobra com gradiente de cores
-for (let i = 0; i < snake.length; i++) {
-    let greenIntensity = 255 - i * 10; // Diminui o verde conforme aumenta o tamanho
-    ctx.fillStyle = `rgb(0, ${greenIntensity > 50 ? greenIntensity : 50}, 0)`;
-    
-    ctx.fillRect(snake[i].x, snake[i].y, box, box);
+    // Primeiro loop: desenhar os contornos
+    for (let i = 0; i < snake.length; i++) {
+        let greenIntensity = 0 + i * 10; // Gradiente verde
+        ctx.strokeStyle = `rgb(0, ${greenIntensity > 50 ? greenIntensity : 50}, 0)`; // Cor do contorno
+        ctx.lineWidth = 2; // Espessura da linha
+        ctx.strokeRect(snake[i].x, snake[i].y, box, box);
+    }
 
-    // Adiciona um contorno para destacar os segmentos
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 2;
-    ctx.strokeRect(snake[i].x, snake[i].y, box, box);
-}
+    // Segundo loop: desenhar os preenchimentos
+    for (let j = 0; j < snake.length; j++) {
+        let greenIntensity = 255 - j * 10; // Gradiente verde
+        ctx.fillStyle = `rgb(0, ${greenIntensity > 50 ? greenIntensity : 50}, 0)`;
+        ctx.fillRect(snake[j].x, snake[j].y, box, box);
+    }
+
 
 
     // Movimenta a cobra
