@@ -17,6 +17,23 @@ let keyPressed;
 ctx.fillStyle = 'black';
 ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
+function generateFood() {
+    let newFood;
+    let overlap;
+
+    do {
+        newFood = {
+            x: Math.floor(Math.random() * 19 + 1) * box,
+            y: Math.floor(Math.random() * 19 + 1) * box
+        };
+
+        // Verifica se a comida não está dentro da cobra
+        overlap = snake.some(segment => segment.x === newFood.x && segment.y === newFood.y);
+    } while (overlap);
+
+    return newFood;
+}
+
 // Verificação de colisão com as paredes
 function collisionWithWall() {
     if (snake[0].x < 0 || snake[0].x >= canvasWidth || snake[0].y < 0 || snake[0].y >= canvasHeight) {
@@ -41,7 +58,7 @@ function collisionWithBody() {
 function collisionWithFood() {
     if (snake[0].x === food.x && snake[0].y === food.y) {
         // A cobra comeu a comida, gera uma nova comida
-        food = { x: Math.floor(Math.random() * 19 + 1) * box, y: Math.floor(Math.random() * 19 + 1) * box };
+        food = generateFood();
         // Adicionar um novo segmento ao corpo da cobra
         snake.push({ x: snake[snake.length - 1].x, y: snake[snake.length - 1].y });
         score++; // Aumenta a pontuação
@@ -51,6 +68,8 @@ function collisionWithFood() {
         snake.pop();
     }
 }
+
+
 function restartGame(event) {
     if (event.keyCode === 13) { // Tecla Enter
         document.removeEventListener("keydown", restartGame);
@@ -63,25 +82,27 @@ function restartGame(event) {
 }
 
 function gameOverScreen() {
-    // Criar fundo verde escuro, simulando um terminal antigo
-    ctx.fillStyle = "#002800"; // Verde bem escuro
+    ctx.fillStyle = "#002800"; 
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // Configurar estilo do texto
     ctx.font = "40px 'Jersey 10', sans-serif";
     ctx.textAlign = "center";
 
-    // Criar um efeito de brilho suave ao redor do texto
-    ctx.fillStyle = "#00ff00"; // Verde brilhante
-    ctx.shadowColor = "#00ff00";
+    ctx.fillStyle = "#00ff00";
     
-    // Texto "GAME OVER"
     ctx.fillText("GAME OVER", canvasWidth / 2, canvasHeight / 2 - 20);
-
-    // Mostrar pontuação final em um tom um pouco mais escuro de verde
+    
     ctx.font = "20px 'Jersey 10', sans-serif";
     ctx.fillStyle = "#00cc00";
     ctx.fillText(`Pontuação: ${score}`, canvasWidth / 2, canvasHeight / 2 + 20);
+
+    // Criar efeito piscante para "Pressione ENTER"
+        ctx.fillStyle = "#00ff00"; 
+        ctx.fillText("PRESSIONE ENTER", canvasWidth / 2, canvasHeight / 2 + 60);
+
+    // Adicionar evento para reiniciar o jogo, mas removendo duplicatas
+    document.removeEventListener("keydown", restartGame);
+    document.addEventListener("keydown", restartGame);
 }
 
 
@@ -105,10 +126,10 @@ function drawGame() {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
     
+
     // Desenhar comida
     ctx.fillStyle = `rgb(255,0,0)`;
     ctx.fillRect(food.x, food.y, box, box);
-
     // Desenhar a cobra
     // Primeiro loop: desenhar os contornos
     for (let i = 0; i < snake.length; i++) {
@@ -169,7 +190,7 @@ document.getElementById('startButton').addEventListener('click', () => {
 //    console.log('Jogo iniciado');
     score = 0;
     snake = [{ x: 9 * box, y: 10 * box }];
-    food = { x: Math.floor(Math.random() * 19 + 1) * box, y: Math.floor(Math.random() * 19 + 1) * box };
+    food = generateFood();
     keyPressed = 'RIGHT';
     
     // Inicia o loop do jogo
